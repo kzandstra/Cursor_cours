@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Tournesol | Énergie, Lumière et Sérénité</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@300;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav id="main-nav">
+        <div class="logo">Le Tournesol</div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#hero">Accueil</a></li>
+            <li><a href="#spiritual">Signification</a></li>
+            <li><a href="#colors">Couleurs</a></li>
+            <li><a href="#varieties">Variétés</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="full-viewport">
+            <div class="hero-content">
+                <h1 class="reveal">Le Tournesol</h1>
+                <p class="subtitle reveal">Suivre la lumière, cultiver le bonheur.</p>
+                <a href="#spiritual" class="cta-button reveal">Découvrir</a>
+            </div>
+            <div class="hero-image-container">
+                <img src="photo-tournesol.jpg" alt="Magnifique Tournesol" id="hero-img">
+            </div>
+        </section>
+
+        <!-- Spiritual Meaning -->
+        <section id="spiritual" class="content-section">
+            <div class="container">
+                <h2 class="reveal">The Spiritual Meaning</h2>
+                <div class="grid reveal">
+                    <div class="text-block">
+                        <p>Many people see sunflowers as a spiritual flower. This is because of their similar appearance
+                            to the sun and the fact that they’re always trying to find the light.</p>
+                        <p>Sunflowers symbolise loyalty and following a spiritual guide. Having these bright, sunny
+                            flowers around can help reduce feelings of stress and anxiety.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Self-Care Tip</h3>
+                        <p>Include sunflowers in teas, bath bombs, and massage oils for the ultimate at-home self-care
+                            ritual!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Colors Section -->
+        <section id="colors" class="content-section alternate-bg">
+            <div class="container">
+                <h2 class="reveal">An Unmistakable Palette</h2>
+                <div class="color-grid">
+                    <div class="color-card reveal" style="--accent: #FFB300;">
+                        <span class="color-dot"></span>
+                        <h3>Yellow</h3>
+                        <p>Goodness, truth and timelessness.</p>
+                    </div>
+                    <div class="color-card reveal" style="--accent: #D32F2F;">
+                        <span class="color-dot"></span>
+                        <h3>Red</h3>
+                        <p>Strength and positivity.</p>
+                    </div>
+                    <div class="color-card reveal" style="--accent: #FB8C00;">
+                        <span class="color-dot"></span>
+                        <h3>Orange</h3>
+                        <p>Energy, happiness and fortune.</p>
+                    </div>
+                    <div class="color-card reveal" style="--accent: #F5F5F5;">
+                        <span class="color-dot" aria-label="White Sunflower color"></span>
+                        <h3>White</h3>
+                        <p>White sunflowers are probably the rarest of them all. They're not a true white, more of a
+                            very pale yellow with a black centre. White sunflowers mean purity, re-birth and peace.</p>
+                    </div>
+                    <div class="color-card reveal" style="--accent: #E91E63;">
+                        <span class="color-dot"></span>
+                        <h3>Pink</h3>
+                        <p>Innocence and good health.</p>
+                    </div>
+                    <div class="color-card reveal" style="--accent: #7B1FA2;">
+                        <span class="color-dot"></span>
+                        <h3>Purple</h3>
+                        <p>Wealth, glory and royalty.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Varieties -->
+        <section id="varieties" class="content-section">
+            <div class="container">
+                <h2 class="reveal">The Different Varieties</h2>
+                <div class="varieties-list reveal">
+                    <div class="variety-item">
+                        <strong>Giant Sunflowers</strong>
+                        <p>The overachievers reaching up to 15 feet tall!</p>
+                    </div>
+                    <div class="variety-item">
+                        <strong>Teddy Bear</strong>
+                        <p>Fluffy, double flowers that look like pom-poms.</p>
+                    </div>
+                    <div class="variety-item">
+                        <strong>Dwarf</strong>
+                        <p>Short but mighty, perfect for small gardens.</p>
+                    </div>
+                    <div class="variety-item">
+                        <strong>Pollen-Free</strong>
+                        <p>All the beauty without the sneezes!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="content-section alternate-bg">
+            <div class="container small-container">
+                <h2 class="reveal">Get in Touch</h2>
+                <div class="contact-card reveal">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="hello@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5"
+                                placeholder="Tell us about your sunflower journey..." required></textarea>
+                        </div>
+                        <button type="submit" class="cta-button">Send Sunshine</button>
+                    </form>
+                    <div id="form-success" class="hidden">
+                        <div class="success-content">
+                            <h3>Thank You!</h3>
+                            <p>Your message has been sent. We'll get back to you soon.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Facts Footer -->
+        <section id="facts" class="footer-section">
+            <div class="container">
+                <div class="facts-banner reveal">
+                    <h3>Did you know?</h3>
+                    <p>A single sunflower can produce between 1000 and 2000 seeds!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 Le Tournesol - Karen's Vision</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

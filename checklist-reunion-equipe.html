@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Réunion d'Équipe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #e8f5ff 50%, #fff4e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b9d;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(255, 107, 157, 0.2);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a8c5e0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .date-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .date-input {
+            padding: 12px 20px;
+            border: 3px solid #ffb3d9;
+            border-radius: 20px;
+            font-size: 1em;
+            background: #fff;
+            color: #ff6b9d;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:hover {
+            background: #ffeef8;
+            transform: scale(1.05);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff4e8 100%);
+            border-radius: 15px;
+            border-left: 5px solid #ff6b9d;
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checklist-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(180deg, #ffb3d9 0%, #a8c5e0 50%, #ffd9b3 100%);
+            transition: width 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .checklist-item:hover::before {
+            width: 8px;
+        }
+
+        .checklist-item.completed {
+            opacity: 0.7;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+        }
+
+        .checklist-item.completed .item-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .custom-checkbox {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #ffb3d9;
+            border-radius: 10px;
+            margin-right: 15px;
+            position: relative;
+            flex-shrink: 0;
+            background: #fff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover .custom-checkbox {
+            border-color: #ff6b9d;
+            transform: scale(1.1);
+        }
+
+        .custom-checkbox.checked {
+            background: linear-gradient(135deg, #ffb3d9 0%, #a8c5e0 100%);
+            border-color: #ff6b9d;
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            margin: 30px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffb3d9 0%, #a8c5e0 50%, #ffd9b3 100%);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffeef8 0%, #fff4e8 100%);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #ff6b9d;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .add-item-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ffb3d9 0%, #a8c5e0 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .add-item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .add-item-btn:active {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 15px;
+        }
+
+        .input-group.active {
+            display: block;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 3px solid #ffb3d9;
+            border-radius: 15px;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6b9d;
+        }
+
+        .input-group button {
+            padding: 10px 25px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #ffb3d9 0%, #a8c5e0 100%);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-save:hover, .btn-cancel:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .checklist-item {
+                padding: 15px;
+            }
+
+            .item-text {
+                font-size: 1em;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .checklist-item.completed .custom-checkbox {
+            animation: bounce 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍭 Checklist Réunion d'Équipe</h1>
+        <p class="subtitle">Organisez vos réunions avec style !</p>
+        
+        <div class="date-section">
+            <input type="date" id="meetingDate" class="date-input">
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalItems">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedItems">0</div>
+                <div class="stat-label">Terminé</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="remainingItems">0</div>
+                <div class="stat-label">Restant</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📋 Avant la réunion</div>
+            <div id="beforeMeeting"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">💬 Pendant la réunion</div>
+            <div id="duringMeeting"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">✅ Après la réunion</div>
+            <div id="afterMeeting"></div>
+        </div>
+
+        <button class="add-item-btn" onclick="toggleAddItem()">+ Ajouter un élément</button>
+        
+        <div class="input-group" id="addItemGroup">
+            <input type="text" id="newItemText" placeholder="Entrez le texte de l'élément...">
+            <select id="newItemSection" style="width: 100%; padding: 12px 20px; border: 3px solid #ffb3d9; border-radius: 15px; font-size: 1em; margin-bottom: 10px;">
+                <option value="before">Avant la réunion</option>
+                <option value="during">Pendant la réunion</option>
+                <option value="after">Après la réunion</option>
+            </select>
+            <button class="btn-save" onclick="addItem()">Ajouter</button>
+            <button class="btn-cancel" onclick="toggleAddItem()">Annuler</button>
+        </div>
+    </div>
+
+    <script>
+        // Données par défaut
+        const defaultItems = {
+            before: [
+                "Préparer l'ordre du jour",
+                "Envoyer les invitations avec l'heure et le lieu",
+                "Préparer les documents nécessaires",
+                "Vérifier la disponibilité de la salle/outil de visioconférence",
+                "Définir les objectifs de la réunion"
+            ],
+            during: [
+                "Faire un tour de table",
+                "Présenter l'ordre du jour",
+                "Prendre des notes importantes",
+                "Identifier les actions à entreprendre",
+                "Assigner des responsables pour chaque action",
+                "Définir les échéances",
+                "Clarifier les points de blocage"
+            ],
+            after: [
+                "Rédiger le compte-rendu",
+                "Envoyer le compte-rendu aux participants",
+                "Suivre les actions décidées",
+                "Planifier la prochaine réunion si nécessaire",
+                "Mettre à jour le tableau de bord du projet"
+            ]
+        };
+
+        let items = JSON.parse(localStorage.getItem('checklistItems')) || defaultItems;
+        let completedItems = JSON.parse(localStorage.getItem('completedItems')) || {};
+
+        // Initialiser la date du jour
+        document.getElementById('meetingDate').valueAsDate = new Date();
+
+        // Charger les éléments
+        function loadItems() {
+            const sections = {
+                before: document.getElementById('beforeMeeting'),
+                during: document.getElementById('duringMeeting'),
+                after: document.getElementById('afterMeeting')
+            };
+
+            Object.keys(sections).forEach(sectionKey => {
+                sections[sectionKey].innerHTML = '';
+                items[sectionKey].forEach((item, index) => {
+                    const itemId = `${sectionKey}-${index}`;
+                    const isCompleted = completedItems[itemId] || false;
+                    createChecklistItem(sections[sectionKey], item, itemId, isCompleted);
+                });
+            });
+
+            updateStats();
+        }
+
+        function createChecklistItem(container, text, itemId, isCompleted) {
+            const item = document.createElement('div');
+            item.className = `checklist-item ${isCompleted ? 'completed' : ''}`;
+            item.dataset.itemId = itemId;
+
+            const checkbox = document.createElement('div');
+            checkbox.className = `custom-checkbox ${isCompleted ? 'checked' : ''}`;
+
+            const itemText = document.createElement('div');
+            itemText.className = 'item-text';
+            itemText.textContent = text;
+
+            item.appendChild(checkbox);
+            item.appendChild(itemText);
+
+            item.addEventListener('click', () => toggleItem(itemId));
+
+            container.appendChild(item);
+        }
+
+        function toggleItem(itemId) {
+            completedItems[itemId] = !completedItems[itemId];
+            localStorage.setItem('completedItems', JSON.stringify(completedItems));
+            loadItems();
+        }
+
+        function updateStats() {
+            let total = 0;
+            let completed = 0;
+
+            Object.keys(items).forEach(sectionKey => {
+                items[sectionKey].forEach((item, index) => {
+                    total++;
+                    const itemId = `${sectionKey}-${index}`;
+                    if (completedItems[itemId]) {
+                        completed++;
+                    }
+                });
+            });
+
+            const remaining = total - completed;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalItems').textContent = total;
+            document.getElementById('completedItems').textContent = completed;
+            document.getElementById('remainingItems').textContent = remaining;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressFill').textContent = `${percentage}%`;
+        }
+
+        function toggleAddItem() {
+            const inputGroup = document.getElementById('addItemGroup');
+            inputGroup.classList.toggle('active');
+            if (inputGroup.classList.contains('active')) {
+                document.getElementById('newItemText').focus();
+            } else {
+                document.getElementById('newItemText').value = '';
+            }
+        }
+
+        function addItem() {
+            const text = document.getElementById('newItemText').value.trim();
+            const section = document.getElementById('newItemSection').value;
+
+            if (text) {
+                items[section].push(text);
+                localStorage.setItem('checklistItems', JSON.stringify(items));
+                loadItems();
+                toggleAddItem();
+            }
+        }
+
+        // Permettre l'ajout avec Enter
+        document.getElementById('newItemText').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addItem();
+            }
+        });
+
+        // Sauvegarder la date
+        document.getElementById('meetingDate').addEventListener('change', (e) => {
+            localStorage.setItem('meetingDate', e.target.value);
+        });
+
+        // Charger la date sauvegardée
+        const savedDate = localStorage.getItem('meetingDate');
+        if (savedDate) {
+            document.getElementById('meetingDate').value = savedDate;
+        }
+
+        // Initialiser
+        loadItems();
+    </script>
+</body>
+</html>

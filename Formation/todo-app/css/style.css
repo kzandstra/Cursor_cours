@@ -1,0 +1,294 @@
+:root {
+    /* Colors */
+    --primary: #8e44ad;
+    --primary-light: #a29bfe;
+    --accent: #6c5ce7;
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --text-main: #2d3436;
+    --text-muted: #636e72;
+    --white: #ffffff;
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+
+    /* Typography */
+    --font-family: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+.glass-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(142, 68, 173, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(108, 92, 231, 0.1) 0%, transparent 40%);
+    z-index: -1;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+    margin: 1rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.app-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+/* Input Section */
+.todo-input-section {
+    margin-bottom: 2rem;
+}
+
+#todo-form {
+    display: flex;
+    gap: 0.75rem;
+}
+
+#todo-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    padding: 1rem 1.5rem;
+    border-radius: 14px;
+    font-family: var(--font-family);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#todo-input:focus {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 4px rgba(162, 155, 254, 0.2);
+}
+
+#todo-input.input-error {
+    border-color: #ff7675;
+    background: rgba(255, 118, 117, 0.05);
+}
+
+.btn-add {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-add:hover {
+    background: var(--accent);
+    transform: scale(1.05);
+}
+
+.btn-add:active {
+    transform: scale(0.95);
+}
+
+/* List Section */
+.todo-list-section {
+    max-height: 60vh;
+    /* F8: More responsive height */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar */
+.todo-list-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.todo-list-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.todo-list-section::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+#todo-list {
+    list-style: none;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+    animation: slideIn 0.4s ease-out backwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.todo-item:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.01);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.todo-checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-light);
+    cursor: pointer;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.todo-item.completed .todo-checkbox {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.todo-checkbox i {
+    color: white;
+    width: 14px;
+    height: 14px;
+    display: none;
+}
+
+.todo-item.completed .todo-checkbox i {
+    display: block;
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.btn-delete {
+    background: transparent;
+    border: none;
+    color: #ff7675;
+    cursor: pointer;
+    padding: 12px;
+    /* Increased from 8px */
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 8px;
+    opacity: 0.3;
+    /* F2: Not invisible, just subtle */
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.todo-item:hover .btn-delete {
+    opacity: 1;
+}
+
+.btn-delete:hover {
+    background: rgba(255, 118, 117, 0.1);
+    color: #d63031;
+}
+
+/* Footer Stats */
+.app-footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 1.5rem;
+    }
+
+    .app-header h1 {
+        font-size: 2rem;
+    }
+}
