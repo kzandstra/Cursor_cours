@@ -1,0 +1,423 @@
+{
+  "name": "TP prix Devis",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour",
+              "minute": 15
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/_LDG/",
+          "mode": "url"
+        },
+        "event": "watchFolderUpdated"
+      },
+      "id": "e701e3bc-47da-49c5-9dcc-c89180a096c1",
+      "name": "Google Drive Trigger",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "uOHlm08ddRk1aM23",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.id }}",
+        "options": {}
+      },
+      "id": "0c41f324-0429-42a4-b7f3-bf4dd4879499",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        784,
+        240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "uOHlm08ddRk1aM23",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        544,
+        176
+      ],
+      "id": "dd4a5e84-f153-406c-b15f-331dc09b3037",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "\"*devis*.pdf\"",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        240,
+        208
+      ],
+      "id": "66af00dd-ff9b-4159-a2d6-1dcb819922a5",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "uOHlm08ddRk1aM23",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "produits",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        256
+      ],
+      "id": "ac91eed9-7c09-4c85-ab34-6cda156388ae",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "GVehEKjsMkVFuBDE",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let response = $json.text || $json.content || '';\n\n// Handle Claude structured response\nif (Array.isArray(response)) {\n  response = response.map(item => item.text || '').join('\\n');\n}\n\n// Ensure string\nif (typeof response !== 'string') {\n  response = JSON.stringify(response);\n}\n\nconst clean = response\n  .replace(/```json\\n?/g, '')\n  .replace(/```\\n?/g, '')\n  .trim();\n\ntry {\n  const parsed = JSON.parse(clean);\n  return { json: parsed };\n} catch (e) {\n  return { json: { text: response } };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        160
+      ],
+      "id": "b0d6b1e8-30cd-4ae4-acf9-bdaeca9b82df",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "produits",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "dev_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.dev_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        160
+      ],
+      "id": "62c76a15-b9d1-40d9-b276-e4754bdf28ed",
+      "name": "Get many rows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "bA4SM9TxHBeMUDWp",
+          "name": "Supabase account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "modelId": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "claude-sonnet-4-6"
+        },
+        "text": "You are a data extraction assistant. Analyze this French quote/offer document (PDF) and extract these fields.\nReturn ONLY a valid JSON object with no explanation, no markdown, no code blocks.\n\nFields to extract:\n- file_id: Google File ID\n- dev_id: quote or offer number\n- date_ajout: document date (DD/MM/YYYY) no matter if the date is in the past\n- date_validite: validity end date (DD/MM/YYYY) no matter if the date is in the past\n- fournisseur: supplier company name\n- client: client company name\n- ref_client: client reference\n- contact: contact person name\n- vat: VAT number\n- produit: first product or service description\n- decription: second line of product or service description\n- qte_devis: quantity (number)\n- prix_unit: unit price (number)\n- total_devis: line total (number)\n\nIf a field is not found, set it to null.",
+        "inputType": "binary",
+        "binaryPropertyName": "=data0",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        976,
+        160
+      ],
+      "id": "fc575dca-3f06-4630-b1fe-5ebf6d79a22e",
+      "name": "Analyze document",
+      "credentials": {
+        "anthropicApi": {
+          "id": "roygUYZYIu7wr4Fc",
+          "name": "Anthropic account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/upload-devis",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a31bed3b-e539-44f7-ac05-6201c230c977",
+      "name": "Webhook",
+      "webhookId": "712322c1-0544-42e3-99fe-8fc5ccd9db11",
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f3ebf920-23c5-422a-9413-120277bfff4e",
+              "leftValue": "={{ $json.dev_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1616,
+        240
+      ],
+      "id": "47503aab-830e-4fb6-b135-eb4f66e8a66d",
+      "name": "If \"dev_id\" does not exist",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "17d93f5b-185c-4e13-a848-6cc22d8652d1",
+              "leftValue": "={{ $('Webhook').item.json.headers.referer }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2016,
+        352
+      ],
+      "id": "3820d8ae-eb4c-4c76-9f7a-841bffebf57b",
+      "name": "If Webhook = Stop"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "If Webhook = Stop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "If \"dev_id\" does not exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If \"dev_id\" does not exist": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Webhook = Stop": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0a9d7c35-a457-4f42-8d9e-c478fc5d2e13",
+  "meta": {
+    "instanceId": "cb5b51d0148c793e8b24167cc4fd7599b0f17ecf377a9dad2678b3702939da97"
+  },
+  "id": "n8Ge1eXhqM1907t-Kukx1",
+  "tags": []
+}
